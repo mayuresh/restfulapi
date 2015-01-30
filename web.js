@@ -2,12 +2,13 @@
  * Created by mayureshp on 1/28/2015.
  */
 
-var PORT = 8000;
 
 var app = require('./config/express')();
 
+app.set('port', (process.env.PORT || 8000));
+
 require('./config/routes')(app);
 
-app.listen(PORT);
+app.listen(app.get('port'));
 
-console.log("Server started on " + PORT);
+console.log("Server started on " + app.get('port'));
