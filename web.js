@@ -5,7 +5,7 @@
 
 var app = require('./config/express')();
 
-app.set('port', (process.env.PORT || 8000));
+app.set('port', (process.env.PORT || 5000));
 
 require('./config/routes')(app);
 
