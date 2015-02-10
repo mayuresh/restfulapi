@@ -6,9 +6,9 @@
 var app = require('./config/express')();
 
 app.set('port', (process.env.PORT || 5000));
-
+require('./config/db')();
 require('./config/routes')(app);
 
-app.listen(app.get('port'));
-
-console.log("Server started on " + app.get('port'));
+app.listen(app.get('port'), function() {
+    console.log("Node app is running at localhost:" + app.get('port'));
+});

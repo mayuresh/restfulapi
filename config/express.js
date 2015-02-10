@@ -21,6 +21,17 @@ module.exports = function() {
     app.use(cookieParser());
     app.use(express.static(path.join(__dirname, 'public/')));
 
+    var cors = require('express-cors');
+
+    app.use(cors({
+        allowedOrigins: [
+            'localhost:*'
+        ],
+        methods: [
+            'GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'
+        ]
+    }));
+
     return app;
 }
 

@@ -2,25 +2,50 @@
  * Created by mayureshp on 1/28/2015.
  */
 
-var todos = [];
+var mongoose = require('mongoose'),
+    Todo = mongoose.model('Todo');
 
 exports.todoById = function(req, res, next, id) {
-    todos.forEach(function(todo, index) {
-       if (todo.id === parseInt(id)) {
-           req.todo = todo;
-       }
+    Todo.findOne({_id: id}, function(err, todo) {
+       if (err) {
+           next(err);
+       };
+        if(todo) {
+            req.todo = todo;
+            next();
+        } else {
+            var error = {
+                error: "Todo Not found"
+            }
+            res.status(404).send(error);
+        }
+
     });
-    next();
+
 }
 
-exports.list = function (req, res) {
-    res.send(todos);
+exports.list = function (req, res, next) {
+    Todo.find(function(err, todos) {
+        if (err) {
+            next(err);
+        }
+        res.send(todos);
+    })
 }
 
 exports.create = function(req, res) {
-    todos.push(req.body);
-    res.send(req.body);
-    }
+    var todo = new Todo(req.body);
+    todo.save(function(err) {
+        if (err) {
+            console.log(err);
+            res.status(400).send(err);
+        } else {
+            res.send(req.body);
+        }
+
+    });
+
+}
 
 exports.read = function(req, res) {
     res.send(req.todo);
@@ -28,6 +53,7 @@ exports.read = function(req, res) {
 
 exports.update = function(req, res) {
     var todo = req.todo;
+
     if (req.body.todoText != undefined) {
         todo.todoText = req.body.todoText;
     }
@@ -35,11 +61,26 @@ exports.update = function(req, res) {
         todo.completed = req.body.completed;
     }
 
-    res.send(todo);
+    todo.save(function(err) {
+        if (err) {
+            console.log(err);
+            res.status(400).send(err);
+        } else {
+            res.send(todo);
+        }
+    });
 }
 
 exports.delete = function(req, res) {
     var todo = req.todo;
-    todos.splice(todos.indexOf(todo), 1);
+    todo.remove(function(err) {
+        if (err) {
+            console.log(err);
+            res.status(400).send(err);
+        } else {
+            res.send(todo);
+        }
+    });
+
     res.send(todo);
 }

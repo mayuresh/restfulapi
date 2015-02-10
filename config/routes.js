@@ -6,7 +6,7 @@ module.exports = function(app) {
     require('../routes/todo.route')(app);
 
     app.use('/api/*', function(req, res, next) {
-       res.json({'error': 'No such service present'}, 404);
+       res.status(404).json({'error': 'No such service present'});
     });
 
     app.use('*', function(req, res, next) {
